@@ -46,7 +46,6 @@ public class DesignDemoPagerAdapter extends FragmentStatePagerAdapter {
         String[] tabTitleArray = {"英雄联盟", "守望先锋", "魔兽世界", "穿越火线", "使命召唤OL", "我的战争"};
         View view = LayoutInflater.from(context).inflate(R.layout.tab_item, null);
         TextView tv = (TextView) view.findViewById(R.id.tab_item1);
-
         tv.setText(tabTitleArray[position]);
         return view;
     }

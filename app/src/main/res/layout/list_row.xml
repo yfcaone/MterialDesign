@@ -2,17 +2,17 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="90dp"
+    android:layout_height="70dp"
     android:orientation="vertical"
     android:clickable="true"
     android:id="@+id/cv"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="6dp"
-    app:cardBackgroundColor="#f98383"
+    app:cardBackgroundColor="#ffffff"
     android:elevation="10dp"
     android:stateListAnimator="@anim/touch_raise"
     android:translationZ="5dp"
-    app:cardElevation="4dp">
+    app:cardElevation="9dp">
 
     <TextView
         android:id="@+id/list_item"

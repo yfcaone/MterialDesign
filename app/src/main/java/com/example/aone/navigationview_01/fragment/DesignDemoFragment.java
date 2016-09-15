@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.aone.navigationview_01.R;
-import com.example.aone.navigationview_01.activity.MainActivity;
 import com.example.aone.navigationview_01.adapter.DesignDemoRecyclerAdapter;
 import com.example.aone.navigationview_01.comm.Http;
 import com.example.aone.navigationview_01.comm.Json;
@@ -23,10 +21,9 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
- *RecyclerView 和Fragment结合
+ * RecyclerView 和Fragment结合
  * Created by aone on 2016/7/26.
  */
 public class DesignDemoFragment extends Fragment {
@@ -35,7 +32,7 @@ public class DesignDemoFragment extends Fragment {
     private String response;
     private static final String TAB_POSITION = "tab_position";
     private List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
-
+//    ArrayList<String>
     private List<Map<String, Object>> itemData;
 
     public DesignDemoFragment() {
@@ -53,30 +50,39 @@ public class DesignDemoFragment extends Fragment {
     }
 
     //显示信息
+    //创建Fragment视图
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        dataDemo();
+        //调用demo的join函数，主线程会阻塞直到demo执行完成
+        DataDemo demo=new DataDemo();
+        demo.start();
+        try {
+            demo.join();
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
         Bundle args = getArguments();
         int tabPosition = args.getInt(TAB_POSITION);
         ArrayList<String> items = new ArrayList<String>();
-        for (int i = 0; i < 10; i++) {
-            items.add("Tab #" + tabPosition + "item #" + i);
+        for (int i = 0; i < data.size(); i++) {
+            items.add(data.get(i).get("ID").toString()+","+data.get(i).get("type").toString()+","+data.get(i).get("subtype").toString());
         }
         View v = inflater.inflate(R.layout.fragment_list, container, false);
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(new DesignDemoRecyclerAdapter(items));
+
         return v;
     }
 
 
-    public void dataDemo() {
-        new Thread(new Runnable() {
+
+
+    class  DataDemo extends Thread {
             @Override
             public void run() {
-
                 response = Http.getGetstr("http://192.168.191.1:1000/ajax/Q_getquestion.ashx?title=");
                 System.out.println("+++++++++++++++++++++++");
                 List<Object> pragme = new ArrayList<Object>();
@@ -95,47 +101,15 @@ public class DesignDemoFragment extends Fragment {
                 message.what = 1;
                 System.out.println("++++++++++++++++++++++++++data" + data);
             }
-        }).start();
     }
-//                    Looper curLooper = Looper.myLooper();
-//                    Looper mainLooper = Looper.getMainLooper();
-//                    String msg;
-//                    if (curLooper == null) {
-//                        mHandler = new MyHandler(mainLooper);
-//                        System.out.println("++++++++++++++++mHandler="+mHandler);
-//                        msg = "curLooper is null";
-//                    } else {
-//                        mHandler = new MyHandler(curLooper);
-//                        System.out.println("++++++++++++++++mHandler"+mHandler);
-//                        msg = "This is curLooper";
-//                    }
-//                    mHandler.removeMessages(0);
-//                    Message m = mHandler.obtainMessage(1, 1, 1, data);
-//                    mHandler.sendMessage(m);
-//                    System.out.println("+++++++++++++++++++++m=" + m);
 
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
-                System.out.println("+++++++++++++++");
             }
-            super.handleMessage(msg);
+
         }
     };
-//    private class MyHandler extends Handler {
-//        public MyHandler(Looper looper) {
-//            super(looper);
-//        }
-//
-//        @Override
-//        public void handleMessage(Message msg) {
-//            if (msg.what == 1) {
-//                System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++");
-//            }
-//            String itemData = msg.obj.toString();
-//            System.out.println(msg.obj.toString());
-//        }
-//    }
 }
 
